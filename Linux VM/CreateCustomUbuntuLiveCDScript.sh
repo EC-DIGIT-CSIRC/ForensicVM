@@ -3,34 +3,6 @@
 # Original Script found at: https://pastebin.com/NQUTWC1y
 # Original Script Author: agilesetllc
 
-# 2017-July-04 - having difficulties building a custom Live CD that boots from a USB stick
-# 
-# Tried https://nathanpfry.com/how-to-customize-an-ubuntu-installation-disc/, but no joy.
-#
-# So, reverting to 'base' documentation, I attempted a 
-# Simple extraction/decompression/re-manifest/compress/make iso image
-# based on https://help.ubuntu.com/community/LiveCDCustomization
-#
-# Could NOT get this to work using genisoimage, even with adaptations from
-# https://askubuntu.com/questions/457528/how-do-i-create-an-efi-bootable-iso-of-a-customized-version-of-ubuntu which
-# pointed me toward "-eltorito-alt-boot and -e boot/grub/efi.img -no-emul-boot"
-#
-# 2017-July-05 - success, but only with xorriso
-#
-# Eventually, Google pointed me to yet another tool to install, xorriso, thanks to
-# https://linuxconfig.org/legacy-bios-uefi-and-secureboot-ready-ubuntu-live-image-customization
-#
-# It works. If anyone cares to propose updates to the script that do not require the 'dd' of isohdpfx.bin
-# and still result in a USB-stick-bootable .iso using genisoimage, I would be pleased to drop xorriso.
-
-# Assumptions:
-# 0. I need this to work for ubuntu 16.04. I don't care about earlier releases, or necessarily later ones (TODO)
-# 1. Host is a fully-patched Ubuntu 16.04.2 server. (I tried a VM, but no loop device)
-# 2. I have downloaded "ubuntu-mate-16.04.2-desktop-amd64.iso" using wget 
-#    This script sits at ~/.
-#    e.g. wget http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.2/release/ubuntu-mate-16.04.2-desktop-amd64.iso
-#         Always good to check http://releases.ubuntu.com/
-
 # Updated Script Author: Bertrand Varlet
 
 # Dependencies installation before running script:
@@ -92,6 +64,7 @@ ln -s /bin/true /sbin/initctl
 
 #Customizations
 
+# Example on how to add a user
 # Add CSIRC user
 # useradd csirc -G sudo,adm
 # Set password for user
@@ -153,8 +126,6 @@ apt-get install python -y
 apt-get install python-pip -y
 apt-get install volatility -y
 apt-get install plaso -y
-# apt-get install python-plaso -y
-# apt-get install plaso-tools -y
 apt-get install sleuthkit -y
 apt-get install ewf-tools -y
 apt-get install tcpdump -y
@@ -196,8 +167,6 @@ apt-get install vim -y
 apt-get install foremost -y
 apt-get install zsh -y
 apt-get install golang -y
-# apt-get install libscca1 -y
-# apt-get install libscca-utils -y
 apt-get install binwalk -y
 apt-get install openjdk-8-jdk -y
 apt-get install elasticsearch -y
@@ -354,15 +323,6 @@ rm md5sum.txt
 find -type f -print0 | xargs -0 md5sum | grep -v isolinux/boot.cat | tee md5sum.txt
 
 #"Create the ISO image"
-#manpage for genisoimage http://manpages.ubuntu.com/manpages/trusty/man1/genisoimage.1.html
-#original
-#genisoimage -D -r -V "$IMAGE_NAME" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o ../$IMAGE_NAME.iso .
-
-#from EFI Q&A: https://askubuntu.com/questions/457528/how-do-i-create-an-efi-bootable-iso-of-a-customized-version-of-ubuntu
-#mkisofs -U -A "Custom1604" -V "Custom1604" -volset "Custom1604" -J -joliet-long -r -v -T -o ../Custom1604.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e boot/grub/efi.img -no-emul-boot .
-
-# From https://linuxconfig.org/legacy-bios-uefi-and-secureboot-ready-ubuntu-live-image-customization
-# THIS WORKS for creating a .iso that can boot a PC from USB after dd to the USB drive, and as a file referenced as the boot image for a VM (e.g. VirtualBox)
 xorriso -as mkisofs -isohybrid-mbr isolinux/isohdpfx.bin -c isolinux/boot.cat -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e boot/grub/efi.img -no-emul-boot -isohybrid-gpt-basdat -o ../$IMAGE_NAME.iso .
 
 # Not necessary, but you can check that a bootable partition is visible to fdisk. 
