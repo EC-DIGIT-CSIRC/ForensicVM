@@ -31,7 +31,7 @@
 #    e.g. wget http://cdimage.ubuntu.com/ubuntu-mate/releases/16.04.2/release/ubuntu-mate-16.04.2-desktop-amd64.iso
 #         Always good to check http://releases.ubuntu.com/
 
-Updated Script Author: Bertrand Varlet
+# Updated Script Author: Bertrand Varlet
 
 # Dependencies installation before running script:
 apt-get update
