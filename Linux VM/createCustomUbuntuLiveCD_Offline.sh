@@ -165,6 +165,7 @@ apt-get install tcpslice -y
 apt-get install tcptrace -y
 apt-get install vim -y
 apt-get install foremost -y
+apt-get install testdisk -y
 apt-get install zsh -y
 apt-get install golang -y
 apt-get install binwalk -y
