@@ -11,6 +11,7 @@ apt-get install unzip xorriso -y
 
 CDIMAGENAME='ubuntu-16.04.2-desktop-amd64.iso'
 IMAGE_NAME='Custom1604'
+REPOIP='10.0.0.1'
 
 echo "Copying $CDIMAGENAME to working directory..."
 
@@ -78,17 +79,17 @@ ln -s /bin/true /sbin/initctl
 export "DEBIAN_FRONTEND=noninteractive"
 
 #Update and Upgrade (distributions)
-echo "deb [arch=amd64] http://RepoForIP/ubuntu xenial main restricted universe multiverse" > /etc/apt/sources.list
-echo "deb [arch=amd64] http://RepoForIP/ubuntu xenial-updates main restricted universe multiverse" >> /etc/apt/sources.list
-echo "deb [arch=amd64] http://RepoForIP/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list
-echo "deb [arch=amd64] http://RepoForIP/mirror/deb.pinguin.lu/amd64 ./" >> /etc/apt/sources.list
-# echo "deb [arch=amd64] http://RepoForIP/mirror/ppa.launchpad.net/gift/stable/ubuntu/ xenial main" >> /etc/apt/sources.list
-echo "deb [arch=amd64] http://RepoForIP/mirror/artifacts.elastic.co/packages/6.x/apt stable main" >> /etc/apt/sources.list
+echo "deb [arch=amd64] http://$REPOIP/ubuntu xenial main restricted universe multiverse" > /etc/apt/sources.list
+echo "deb [arch=amd64] http://$REPOIP/ubuntu xenial-updates main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb [arch=amd64] http://$REPOIP/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb [arch=amd64] http://$REPOIP/mirror/deb.pinguin.lu/amd64 ./" >> /etc/apt/sources.list
+# echo "deb [arch=amd64] http://$REPOIP/mirror/ppa.launchpad.net/gift/stable/ubuntu/ xenial main" >> /etc/apt/sources.list
+echo "deb [arch=amd64] http://$REPOIP/mirror/artifacts.elastic.co/packages/6.x/apt stable main" >> /etc/apt/sources.list
 
 # download the signing key of repo's and add it to apt-key list
-wget -q http://RepoForIP/keys/debsign_public.key -O- | apt-key add -
-# wget -q http://RepoForIP/keys/10C598B8 -O- | apt-key add -
-wget -q http://RepoForIP/keys/elastic_search.key -O- | apt-key add -
+wget -q http://$REPOIP/keys/debsign_public.key -O- | apt-key add -
+# wget -q http://$REPOIP/keys/10C598B8 -O- | apt-key add -
+wget -q http://$REPOIP/keys/elastic_search.key -O- | apt-key add -
 apt-get update
 
 # Purge unwanted applications/software
@@ -96,13 +97,13 @@ apt-get purge thunderbird aisleriot webbrowser-app cheese cheese-common gnome-ma
 
 # Install of fred
 apt-get install libqtwebkit4 -y
-wget http://RepoForIP/manual/plugins/libqt4-webkit_4.8.5+git192-g085f851+dfsg-2ubuntu4.1_amd64.deb
+wget http://$REPOIP/manual/plugins/libqt4-webkit_4.8.5+git192-g085f851+dfsg-2ubuntu4.1_amd64.deb
 apt-get install ./libqt4-webkit_4.8.5+git192-g085f851+dfsg-2ubuntu4.1_amd64.deb
 apt-get install fred fred-reports -y
 
 # Install of disloker
 apt-get install gcc cmake make libfuse-dev libmbedtls-dev ruby-dev -y
-wget http://RepoForIP/manual/drivers/dislocker-0.7.1.tar.gz
+wget http://$REPOIP/manual/drivers/dislocker-0.7.1.tar.gz
 tar -xzvf dislocker-0.7.1.tar.gz
 cd dislocker-0.7.1
 cmake .
@@ -112,7 +113,7 @@ cd -
 
 # Install of Regripper
 apt-get install libparse-win32registry-perl -y
-wget http://RepoForIP/manual/standalones/regripper/2.8/regripper_2.8-linux.zip
+wget http://$REPOIP/manual/standalones/regripper/2.8/regripper_2.8-linux.zip
 unzip regripper_2.8-linux.zip
 mv RegRipper2.8-master /opt/regripper
 cd /opt/regripper
@@ -178,16 +179,16 @@ apt-get install kibana -y
 apt-get install open-vm-tools-desktop -y
 
 # pip installs
-pip install --no-index --find-links=http://RepoForIP/pip virtualenv --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip pyopenssl --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip python-evtx --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip python-registry --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip virustotal-api --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip artifacts --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip bencode --trusted-host RepoForIP
+pip install --no-index --find-links=http://$REPOIP/pip virtualenv --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip pyopenssl --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip python-evtx --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip python-registry --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip virustotal-api --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip artifacts --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip bencode --trusted-host $REPOIP
 
 #Download pip, setuptools, wheels for the virtualEnv
-pip download pip setuptools wheel -d /tmp --no-index --find-links=http://RepoForIP/pip --trusted-host RepoForIP
+pip download pip setuptools wheel -d /tmp --no-index --find-links=http://$REPOIP/pip --trusted-host $REPOIP
 
 #Changing directory to store the VirtualEnv
 cd /opt
@@ -199,13 +200,13 @@ python -m virtualenv VErekall --no-download --extra-search-dir=/tmp
 source ./VErekall/bin/activate
 
 #Install rekall
-pip install --no-index --find-links=http://RepoForIP/pip pyrekall --trusted-host RepoForIP
+pip install --no-index --find-links=http://$REPOIP/pip pyrekall --trusted-host $REPOIP
 
 # Exiting virtualEnv VErekall
 deactivate
 
 # Download Rekall profiles
-wget http://RepoForIP/git/rekall-profiles.zip
+wget http://$REPOIP/git/rekall-profiles.zip
 mv rekall-profiles.zip /opt/VErekall
 cd /opt/VErekall/
 unzip rekall-profiles.zip
@@ -246,15 +247,15 @@ python -m virtualenv VEscapy --no-download --extra-search-dir=/tmp
 source ./VEscapy/bin/activate
 
 #Install Scapy
-pip install --no-index --find-links=http://RepoForIP/pip IPython --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip numpy --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip pycrypto --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip pyx==0.12.1 --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip matplotlib --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip pyreadline --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip libpcap --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip ecdsa --trusted-host RepoForIP
-pip install --no-index --find-links=http://RepoForIP/pip scapy --trusted-host RepoForIP
+pip install --no-index --find-links=http://$REPOIP/pip IPython --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip numpy --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip pycrypto --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip pyx==0.12.1 --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip matplotlib --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip pyreadline --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip libpcap --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip ecdsa --trusted-host $REPOIP
+pip install --no-index --find-links=http://$REPOIP/pip scapy --trusted-host $REPOIP
 
 # Exiting virtualEnv VEscapy
 deactivate
@@ -286,7 +287,7 @@ rm -rf dislocker-0.7.1.tar.gz
 rm -rf dislocker-0.7.1
 rm -rf libqt4-webkit_4.8.5+git192-g085f851+dfsg-2ubuntu4.1_amd64.deb
 rm -rf regripper_2.8.zip
-rm -rf /opt/RepoForIP
+rm -rf /opt/$REPOIP
 rm -rf /opt/click.ubuntu.com
 rm -rf /tmp/* ~/.bash_history
 rm /var/lib/dbus/machine-id
